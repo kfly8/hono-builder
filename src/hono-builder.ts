@@ -1,6 +1,6 @@
 /**
  * @module
- * This module provides the `HonoBuilder` class, which is a builder for Hono instance.
+ * This module is a builder class for Hono.
  */
 
 import { Hono } from 'hono'
@@ -12,23 +12,19 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
   #errorHandler: ErrorHandler<E> | undefined
 
   /**
-   * Creates a new HonoBuilder instance.
+   * Construct HonoBuilder, which is a builder class for Hono
    *
-   * HonoBuilder is a builder pattern implementation for creating Hono applications.
-   *
-   * @param options - Optional configuration options for the Hono instance
+   * @param options - same options as Hono constructor.
    *
    * @example
    *
    * ```typescript
-   * import { HonoBuilder } from 'hono-builder'
-   *
    * const builder = new HonoBuilder()
    *
-   * // Configure routes
+   * // Define routes
    * builder.get('/hello', (c) => c.json({ message: 'Hello!' }))
    *
-   * // Build the final Hono app
+   * // Build the Hono app
    * const app = builder.build()
    * ```
    */
@@ -37,7 +33,7 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
   }
 
   /**
-   * Build a new Hono instance with the configured routes and handlers.
+   * Build a new Hono instance with the configured routes
    *
    * @returns {Hono} A new Hono instance.
    *
@@ -75,7 +71,7 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
   }
 
   /**
-   * builder.setNotFoundHandler allows you to customize a Not Found Response.
+   * `builder.setNotFoundHandler` allows you to customize a Not Found Response.
    *
    * @see https://hono.dev/docs/api/hono#not-found
    *
@@ -93,7 +89,7 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
   }
 
   /**
-   * builder.setErrorHandler handles an error and returns a customized Response.
+   * `builder.setErrorHandler` handles an error and returns a customized Response.
    *
    * @see https://hono.dev/docs/api/hono#error-handling
    *
@@ -111,8 +107,8 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
     this.#errorHandler = handler
   }
 
-  // These methods are disabled in HonoBuilder to prevent mistake.
-  // HonoBuilder is just a builder for Hono applications, dand it should not be used as a full Hono application.
+  // Following methods are disabled in HonoBuilder to prevent mistake.
+  // HonoBuilder is just a builder class for Hono, it should not be Hono.
 
   /**
    * `.fetch()` disabled in HonoBuilder
