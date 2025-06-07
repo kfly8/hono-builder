@@ -1,0 +1,19 @@
+{
+  "name": "03-vite",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "hono": "^4.7.11",
+    "hono-builder": "^0.0.1"
+  },
+  "devDependencies": {
+    "@hono/vite-dev-server": "^0.19.1",
+    "@types/bun": "latest",
+    "typescript": "^5",
+    "vite": "^6.3.5"
+  }
+}
