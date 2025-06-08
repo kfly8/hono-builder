@@ -2,7 +2,7 @@
   "name": "03-vite",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },

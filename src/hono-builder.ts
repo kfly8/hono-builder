@@ -12,7 +12,7 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
   #errorHandler: ErrorHandler<E> | undefined
 
   /**
-   * Construct HonoBuilder, which is a builder class for Hono
+   * Construct with same option as Hono constructor.
    *
    * @param options - same options as Hono constructor.
    *
