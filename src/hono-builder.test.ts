@@ -40,9 +40,12 @@ describe('setErrorHandler', () => {
   const builder = new HonoBuilder()
 
   builder.setErrorHandler((err, c) => {
-    return c.json({
-      error: err.message,
-    }, 500)
+    return c.json(
+      {
+        error: err.message,
+      },
+      500
+    )
   })
 
   builder.get('/error', () => {
@@ -59,4 +62,3 @@ describe('setErrorHandler', () => {
     expect(body).toEqual({ error: 'Test Error' })
   })
 })
-

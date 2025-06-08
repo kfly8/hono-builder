@@ -7,7 +7,11 @@ import { Hono } from 'hono'
 import type { Env, Schema, NotFoundHandler, ErrorHandler } from 'hono'
 import type { HonoOptions } from 'hono/hono-base'
 
-export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath extends string = '/'> extends Hono<E,S,BasePath> {
+export class HonoBuilder<
+  E extends Env = Env,
+  S extends Schema = {},
+  BasePath extends string = '/'
+> extends Hono<E, S, BasePath> {
   #notFoundHandler: NotFoundHandler<E> | undefined
   #errorHandler: ErrorHandler<E> | undefined
 
@@ -52,7 +56,7 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
    * // => Now you can use `app` as a Hono app.
    */
   build() {
-    const app = new Hono<E,S,BasePath>({
+    const app = new Hono<E, S, BasePath>({
       router: this.router,
       getPath: this.getPath,
     })
