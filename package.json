@@ -1,9 +1,13 @@
 {
   "name": "hono-builder",
   "module": "src/index.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "type": "module",
   "scripts": {
-    "test": "vitest",
+    "test": "tsc --noEmit && vitest --run",
+    "test:watch": "vitest --watch",
+    "test:examples": "echo 'Testing examples (ensure bun link hono-builder is set first)' && cd examples/01-basic && tsc --noEmit && cd ../02-rpc && tsc --noEmit && cd ../03-vite && tsc --noEmit && cd ../..",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --check --cache \"src/**/*.{js,ts,tsx}\"",
