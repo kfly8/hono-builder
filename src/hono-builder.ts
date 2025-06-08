@@ -7,7 +7,7 @@ import { Hono } from 'hono'
 import type { Env, Schema, NotFoundHandler, ErrorHandler } from 'hono'
 import type { HonoOptions } from 'hono/hono-base'
 
-export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath extends string = '/'> extends Hono {
+export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath extends string = '/'> extends Hono<E,S,BasePath> {
   #notFoundHandler: NotFoundHandler<E> | undefined
   #errorHandler: ErrorHandler<E> | undefined
 
@@ -29,7 +29,7 @@ export class HonoBuilder<E extends Env = Env, S extends Schema = {}, BasePath ex
    * ```
    */
   constructor(options?: HonoOptions<E>) {
-    super(options as any)
+    super(options)
   }
 
   /**
