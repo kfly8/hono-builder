@@ -1,17 +1,30 @@
 {
   "name": "hono-builder",
-  "module": "src/index.ts",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "version": "0.1.0",
+  "description": "A builder for Hono applications",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "test": "tsc --noEmit && vitest --run",
     "test:watch": "vitest --watch",
-    "test:examples": "echo 'Testing examples (ensure bun link hono-builder is set first)' && cd examples/01-basic && tsc --noEmit && cd ../02-rpc && tsc --noEmit && cd ../03-vite && tsc --noEmit && cd ../..",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --check --cache \"src/**/*.{js,ts,tsx}\"",
-    "format:fix": "prettier --write --cache --cache-strategy metadata \"src/**/*.{js,ts,tsx}\""
+    "format:fix": "prettier --write --cache --cache-strategy metadata \"src/**/*.{js,ts,tsx}\"",
+    "build": "bun ./build/build.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
