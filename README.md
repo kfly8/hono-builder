@@ -1,6 +1,6 @@
 # Hono Builder
 
-The Hono Builder helps to build Hono instance. Sometimes, it is difficult to configure complex routing, but it makes easier to organize it. In addition, the routing configuration method is exactly the same as Hono, so it is easy to use.
+Builder pattern for Hono apps. Enables modular routing and optimized bundle sizes for edge runtimes.
 
 ## Import
 
