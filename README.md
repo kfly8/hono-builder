@@ -100,3 +100,8 @@ src
 
 For more details, please refer to the examples.
 
+## Acknowledgments
+
+This project is built with and inspired by [Hono](https://hono.dev).
+Special thanks to [Yusuke Wada](https://github.com/yusukebe) and the Hono contributors for creating such an amazing framework.
+
