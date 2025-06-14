@@ -2,20 +2,25 @@
   "name": "hono-builder",
   "version": "0.1.0",
   "description": "A builder for Hono applications",
-  "main": "dist/index.cjs",
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
   "files": [
-    "dist",
-    "README.md"
+    "dist"
   ],
   "scripts": {
     "test": "tsc --noEmit && vitest --run",
@@ -36,9 +41,7 @@
     "vitest": "^3.2.2"
   },
   "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "hono": "^4.7.11"
+    "typescript": "^5",
+    "hono": "^4.0.0"
   }
 }

@@ -26,39 +26,30 @@ async function build() {
     console.log("📦 Building CommonJS bundle...");
     await Bun.build({
       ...commonOptions,
-      outdir: "./dist",
+      outdir: "./dist/cjs",
       format: "cjs",
-      naming: "[dir]/[name].cjs",
+      naming: "[dir]/[name].js",
     });
 
     console.log("📝 Generating TypeScript declarations...");
-    await $`tsc \
-      --project ./tsconfig.build.json \
-      --declaration \
-      --emitDeclarationOnly \
-      --outDir ./dist \
-    `;
+    await $`tsc --project ./tsconfig.build.json`;
 
-    console.log("📄 Creating package.json for dist...");
+    console.log("📝 Copying .d.ts files to cjs directory...");
+    // Copy all .d.ts files from ./dist to ./dist/cjs and rename to .d.cts
+    const glob = new Bun.Glob("*.d.ts");
+    for await (const file of glob.scan("./dist")) {
+      const baseName = file.replace(/\.d\.ts$/, "");
+      const sourceFile = `./dist/${file}`;
+      const targetFile = `./dist/cjs/${baseName}.d.cts`;
+      await Bun.write(targetFile, await Bun.file(sourceFile).text());
+    }
+
+    console.log("📄 Creating package.json for commonjs... ")
     const packageJson = {
-      name: "hono-builder",
-      main: "./index.cjs",
-      module: "./index.js",
-      types: "./index.d.ts",
-      type: "module",
-      exports: {
-        ".": {
-          types: "./index.d.ts",
-          import: "./index.js",
-          require: "./index.cjs"
-        }
-      },
-      peerDependencies: {
-        hono: "^4.0.0"
-      }
+      type: "commonjs",
     };
 
-    await Bun.write("./dist/package.json", JSON.stringify(packageJson, null, 2));
+    await Bun.write("./dist/cjs/package.json", JSON.stringify(packageJson, null, 2));
 
     console.log("✅ Build completed successfully!");
   } catch (error) {
