@@ -1,6 +1,6 @@
 # Hono Builder
 
-Builder pattern for Hono apps. Enables modular routing and optimized bundle sizes for edge runtimes.
+Builder class for Hono framework. Enables modular routing and optimized bundle sizes for edge runtimes.
 
 ## Import
 

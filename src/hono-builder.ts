@@ -1,6 +1,6 @@
 /**
  * @module
- * This module is a builder class for Hono.
+ * This module is a builder class for Hono framework.
  */
 
 import { Hono } from 'hono'
