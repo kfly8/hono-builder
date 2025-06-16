@@ -1,5 +1,5 @@
 import { $ } from "bun";
-import { displayResult } from './utils'
+import { run } from './utils'
 
 const commonOptions = {
   entrypoints: ["./src/index.ts"],
@@ -9,33 +9,23 @@ const commonOptions = {
   external: ["hono"],
 }
 
-const esmBuild = async () => {
-  const startTime = performance.now();
-  const result = await Bun.build({
+const esmBuild = () => run(
+  Bun.build({
     ...commonOptions,
     outdir: "./dist",
     format: "esm",
     naming: "[dir]/[name].js",
   })
-  const endTime = performance.now();
-  const buildTime = endTime - startTime;
+)
 
-  displayResult(result, { buildTime });
-}
-
-const cjsBuild = async () => {
-  const startTime = performance.now();
-  const result = await Bun.build({
+const cjsBuild = () => run(
+  Bun.build({
     ...commonOptions,
     outdir: "./dist/cjs",
     format: "cjs",
     naming: "[dir]/[name].js",
   })
-  const endTime = performance.now();
-  const buildTime = endTime - startTime;
-
-  displayResult(result, { buildTime });
-}
+)
 
 async function build() {
   try {

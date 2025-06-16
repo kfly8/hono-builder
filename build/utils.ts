@@ -1,85 +1,103 @@
 
-interface DisplayOptions {
-  maxDisplay?: number;
-  sizeDecimalPlaces?: number;
-  buildTime?: number;
-}
-
-const DEFAULT_MAX_DISPLAY = 30;
+const DEFAULT_MAX_DISPLAY_FILES = 30;
 const DEFAULT_SIZE_DECIMAL_PLACES = 1;
 
+interface Options {
+  maxDisplayFiles?: number;
+  fileSizeDecimalPlaces?: number;
+}
+
 /**
- * Display the result of a Bun build process in a human-readable format.
+ * Run build promise with display of output files and build time.
+ *
+ * @param buildPromise - The promise returned by Bun.build()
+ * @param options - Optional configuration for display
+ *
+ * @example
+ * ```ts
+ * import { run } from './utils';
+ *
+ * const buildPromise = Bun.build({
+ *   entrypoints: ['./src/index.ts'],
+ *   outdir: './dist',
+ *   format: 'esm',
+ * })
+ *
+ * run(buildPromise, { maxDisplayFiles: 20, fileSizeDecimalPlaces: 2 });
+ * ```
  */
-export function displayResult(result: Bun.BuildOutput, options: DisplayOptions = {}) {
+export async function run(buildPromise: Promise<Bun.BuildOutput>, options: Options = {}) {
+  const startTime = performance.now()
+  const result = await buildPromise
+  const endTime = performance.now()
+  const buildTime = endTime - startTime
+
   if (result.success === false) {
     throw new Error('Failed to build')
   }
 
-  const files = result.outputs.map(output => Bun.file(output.path));
-  displayFiles(files, options);
-  displaySummary(options);
+  const files = result.outputs.map(output => Bun.file(output.path))
+  console.log( displayFiles(files, options) );
+  console.log( displayBuildTime(buildTime) );
 }
 
-// Display the files in a sorted and formatted manner
-function displayFiles(files: Bun.BunFile[], options: DisplayOptions) {
+// Display the output files in a human-readable format
+function displayFiles(files: Bun.BunFile[], options: Options) {
   const sortedFiles = files.sort((a, b) => b.size - a.size);
-  const maxDisplay = options.maxDisplay ?? DEFAULT_MAX_DISPLAY;
+
+  const result: string[] = [];
 
   if (sortedFiles.length > 0) {
-    // Display up to maxDisplay
-    const filesToShow = sortedFiles.slice(0, maxDisplay);
+    // Display up to maxDisplayFiles
+    const maxDisplayFiles = options.maxDisplayFiles ?? DEFAULT_MAX_DISPLAY_FILES;
+    const filesToShow = sortedFiles.slice(0, maxDisplayFiles);
 
     // Calculate the maximum display width for alignment
-    const fileNames = filesToShow.map(file => formatFileName(file));
-    const maxDisplayWidth = Math.max(...fileNames.map(name => getDisplayWidth(name)));
+    const fileNames = filesToShow.map(file => displayFileName(file));
+    const maxDisplayFilesWidth = Math.max(...fileNames.map(name => getDisplayWidth(name)));
 
     for (let i = 0; i < filesToShow.length; i++) {
       const file = filesToShow[i];
       const fileName = fileNames[i];
-      const fileSize = formatFileSize(file, options);
-      const padding = ' '.repeat(maxDisplayWidth - getDisplayWidth(fileName));
-      console.log(`  ${fileName}${padding} ${fileSize}`)
+      const fileSize = displayFileSize(file, options);
+      const padding = ' '.repeat(maxDisplayFilesWidth - getDisplayWidth(fileName));
+      result.push(`  ${fileName}${padding} ${fileSize}`);
     }
 
     // Show remaining file count
-    const remainingCount = sortedFiles.length - maxDisplay;
+    const remainingCount = sortedFiles.length - maxDisplayFiles;
     if (remainingCount > 0) {
-      console.log(`..and ${remainingCount} more output files...`);
+      result.push(`..and ${remainingCount} more output files...`);
     }
   }
+
+  return result.join('\n')
 }
 
-// Summary of the build process
-function displaySummary(options: DisplayOptions) {
+// Display the build time in a human-readable format
+function displayBuildTime(buildTime: number) {
+  const formattedTime = buildTime < 1000
+    ? `${buildTime.toFixed(1)}ms`
+    : `${(buildTime / 1000).toFixed(2)}s`;
 
-  if (options.buildTime !== undefined) {
-    const formattedTime = options.buildTime < 1000
-      ? `${options.buildTime.toFixed(1)}ms`
-      : `${(options.buildTime / 1000).toFixed(2)}s`;
-    console.log(`⚡ \x1b[32mDone in ${formattedTime}\x1b[0m\n`);
-  }
-  else {
-    console.log("⚡ \x1b[32mDone\x1b[0m\n");
-  }
+  return `⚡ \x1b[32mDone in ${formattedTime}\x1b[0m\n`;
 }
 
-
-// Format the file size in a human-readable format
+// Display the file size in a human-readable format
 // e.g. "123.4 KB"
-function formatFileSize(file: Bun.BunFile, options: DisplayOptions) {
-  const kb = file.size / 1024;
-  const decimalPlaces = options.sizeDecimalPlaces ?? DEFAULT_SIZE_DECIMAL_PLACES;
-  const humanReadableSize        = `${kb.toFixed(decimalPlaces)} KB`;
-  const coloredHumanReadableSize = `\x1b[36m${humanReadableSize.padStart(8)}\x1b[0m`;
+function displayFileSize(file: Bun.BunFile, options: Pick<Options, 'fileSizeDecimalPlaces'>) {
+  const decimalPlaces = options.fileSizeDecimalPlaces ?? DEFAULT_SIZE_DECIMAL_PLACES;
 
-  return coloredHumanReadableSize;
+  const hrSize      = `${(file.size / 1024).toFixed(decimalPlaces)} KB`;
+  const coloredSize = `\x1b[36m${hrSize.padStart(8)}\x1b[0m`;
+  return coloredSize;
 }
 
-// Format the file name to be displayed in a human-readable format
-// e.g. "/path/to/dist/file.js" -> "dist/\x1b[1mfile.js\x1b[0m"
-function formatFileName(file: Bun.BunFile): string {
+// Display the file name in a human-readable format
+// e.g. "/path/to/dist/file.js" -> "dist/*file.js*"
+function displayFileName(file: Bun.BunFile): string {
   if (file.name === undefined) {
+    // Something went wrong, file.name should not be undefined when building
     throw new Error('File name is undefined');
   }
 
@@ -96,9 +114,9 @@ function formatFileName(file: Bun.BunFile): string {
 
   // Make filename bold
   const boldFilename = `\x1b[1m${filename}\x1b[0m`;
-  const displayPath = directory + boldFilename;
+  const displayFileName = directory + boldFilename;
 
-  return displayPath
+  return displayFileName
 }
 
 // Calculate the actual display width of a string, excluding ANSI escape sequences
