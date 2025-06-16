@@ -1,4 +1,5 @@
 import { $ } from "bun";
+import { displayResult } from './utils'
 
 const commonOptions = {
   entrypoints: ["./src/index.ts"],
@@ -8,33 +9,42 @@ const commonOptions = {
   external: ["hono"],
 }
 
+const esmBuild = async () => {
+  const startTime = performance.now();
+  const result = await Bun.build({
+    ...commonOptions,
+    outdir: "./dist",
+    format: "esm",
+    naming: "[dir]/[name].js",
+  })
+  const endTime = performance.now();
+  const buildTime = endTime - startTime;
+
+  displayResult(result, { buildTime });
+}
+
+const cjsBuild = async () => {
+  const startTime = performance.now();
+  const result = await Bun.build({
+    ...commonOptions,
+    outdir: "./dist/cjs",
+    format: "cjs",
+    naming: "[dir]/[name].js",
+  })
+  const endTime = performance.now();
+  const buildTime = endTime - startTime;
+
+  displayResult(result, { buildTime });
+}
+
 async function build() {
-  console.log("🚀 Building hono-builder...");
-
   try {
-    console.log("📁 Cleaning dist directory...");
-    await $`rm -rf ./dist`;
+    console.log("Starting build process...");
+    await Promise.all([ esmBuild(), cjsBuild() ]);
 
-    console.log("📦 Building ESM bundle...");
-    await Bun.build({
-      ...commonOptions,
-      outdir: "./dist",
-      format: "esm",
-      naming: "[dir]/[name].js",
-    });
-
-    console.log("📦 Building CommonJS bundle...");
-    await Bun.build({
-      ...commonOptions,
-      outdir: "./dist/cjs",
-      format: "cjs",
-      naming: "[dir]/[name].js",
-    });
-
-    console.log("📝 Generating TypeScript declarations...");
+    console.log("Generating type definitions...");
     await $`tsc --project ./tsconfig.build.json`;
 
-    console.log("📝 Copying .d.ts files to cjs directory...");
     // Copy all .d.ts files from ./dist to ./dist/cjs and rename to .d.cts
     const glob = new Bun.Glob("*.d.ts");
     for await (const file of glob.scan("./dist")) {
@@ -44,16 +54,12 @@ async function build() {
       await Bun.write(targetFile, await Bun.file(sourceFile).text());
     }
 
-    console.log("📄 Creating package.json for commonjs... ")
-    const packageJson = {
-      type: "commonjs",
-    };
-
+    const packageJson = { type: "commonjs" };
     await Bun.write("./dist/cjs/package.json", JSON.stringify(packageJson, null, 2));
 
-    console.log("✅ Build completed successfully!");
+    console.log("Build successful!");
   } catch (error) {
-    console.error("❌ Build failed:", error);
+    console.error("Build failed:", error);
     process.exit(1);
   }
 }

@@ -29,7 +29,8 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --check --cache \"src/**/*.{js,ts,tsx}\"",
     "format:fix": "prettier --write --cache --cache-strategy metadata \"src/**/*.{js,ts,tsx}\"",
-    "build": "bun ./build/build.ts",
+    "remove-dist": "rm -rf ./dist",
+    "build": "bun run remove-dist && bun ./build/build.ts",
     "postbuild": "publint"
   },
   "devDependencies": {
