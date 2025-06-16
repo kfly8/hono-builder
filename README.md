@@ -1,3 +1,7 @@
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/kfly8/hono-builder/ci.yml)
+![GitHub License](https://img.shields.io/github/license/kfly8/hono-builder)
+![NPM Version](https://img.shields.io/npm/v/hono-builder)
+
 # Hono Builder
 
 Builder class for Hono framework. Enables modular routing and optimized bundle sizes for edge runtimes.
