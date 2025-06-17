@@ -1,7 +1,11 @@
 {
   "name": "hono-builder",
   "version": "0.1.0",
-  "description": "A builder for Hono applications",
+  "description": "Builder pattern for Hono framework",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kfly8/hono-builder.git"
+  },
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
@@ -44,5 +48,11 @@
   "peerDependencies": {
     "typescript": "^5",
     "hono": "^4.0.0"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "hono"
+  ]
 }
