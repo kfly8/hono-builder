@@ -9,9 +9,9 @@ Builder pattern for Hono framework. Enables modular routing and optimized bundle
 ## Usage
 
 ```typescript
-import { newHonoBuilder } from 'hono-builder'
+import { honoBuilder } from 'hono-builder'
 
-const builder = newHonoBuilder()
+const builder = honoBuilder()
 
 builder.get('/hello', (c) => c.text('Hello'))
 
@@ -37,9 +37,9 @@ Additionally, `HonoBuilder` has the routing methods, which have the same interfa
 - builder.**basePath**(path)
 - builder.**mount**(path, anotherApp)
 
-## `newHonoBuilder`
+## `honoBuilder`
 
-`newHonoBuilder` receives options and type generics like `Hono`, and generates a `Hono` instance based on them.
+`honoBuilder` receives options and type generics like `Hono`, and generates a `Hono` instance based on them.
 
 ```typescript
 type Bindings = {
@@ -54,7 +54,7 @@ const options = {
   strict: true
 }
 
-const builder = newHonoBuilder<Env>(options)
+const builder = honoBuilder<Env>(options)
 
 const app = builder.build()
 // => build Hono<Env>(options)
@@ -65,7 +65,7 @@ const app = builder.build()
 `.build()` makes a new Hono instance with the configured routes.
 
 ```typescript
-const builder = newHonoBuilder()
+const builder = honoBuilder()
 
 // Define routes
 builder.get('/hello', (c) => c.json({ message: 'Hello!' }))

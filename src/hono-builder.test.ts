@@ -1,7 +1,7 @@
-import { newHonoBuilder } from './hono-builder'
+import { honoBuilder } from './hono-builder'
 
 describe('#build', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   builder.get('/hello', (c) => {
     return c.json({ message: 'Hello, World!' })
@@ -21,7 +21,7 @@ describe('#build', () => {
     type Variables = {
       startTime: number
     }
-    const builder = newHonoBuilder<{ Variables: Variables }>()
+    const builder = honoBuilder<{ Variables: Variables }>()
 
     builder.use('/api/*', async (c, next) => {
       c.set('startTime', Date.now())
@@ -55,7 +55,7 @@ describe('#build', () => {
       DB_URL: string
     }
 
-    const builder = newHonoBuilder<{ Bindings: Bindings }>()
+    const builder = honoBuilder<{ Bindings: Bindings }>()
 
     builder.get('/api/config', (c) => {
       const apiKey = c.env.API_KEY
@@ -82,7 +82,7 @@ describe('#build', () => {
 
 describe('#setNotFoundHandler', () => {
   it('should set custom 404 handler', async () => {
-    const builder = newHonoBuilder()
+    const builder = honoBuilder()
 
     builder.setNotFoundHandler((c) => {
       return c.text('Custom 404 Message', 404)
@@ -98,7 +98,7 @@ describe('#setNotFoundHandler', () => {
 
 describe('#setErrorHandler', () => {
   it('should set custom error handler', async () => {
-    const builder = newHonoBuilder()
+    const builder = honoBuilder()
 
     builder.setErrorHandler((err, c) => {
       console.error(`Error: ${err.message}`)
@@ -117,7 +117,7 @@ describe('#setErrorHandler', () => {
   })
 })
 describe('#HTTP_METHOD', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   builder.get('/foo', (c) => c.text('GET method'))
   builder.post('/foo', (c) => c.text('POST method'))
@@ -172,7 +172,7 @@ describe('#HTTP_METHOD', () => {
   })
 
   suite('Path Parameters', () => {
-    const builder = newHonoBuilder()
+    const builder = honoBuilder()
 
     builder.get('/echo/:message', (c) => {
       const message = c.req.param('message')
@@ -218,7 +218,7 @@ describe('#HTTP_METHOD', () => {
   })
 
   suite('Query Parameters', () => {
-    const builder = newHonoBuilder()
+    const builder = honoBuilder()
 
     builder.get('/search', (c) => {
       const query = c.req.query('q')
@@ -253,7 +253,7 @@ describe('#HTTP_METHOD', () => {
   })
 
   suite('Chained Routes', () => {
-    const builder = newHonoBuilder()
+    const builder = honoBuilder()
 
     builder
       .get('/chained/:id', (c) => {
@@ -292,7 +292,7 @@ describe('#HTTP_METHOD', () => {
 })
 
 describe('#all', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   // The `all` method handles ALL HTTP methods on a specific path
   builder.all('/wildcard', (c) => {
@@ -365,7 +365,7 @@ describe('#all', () => {
 })
 
 describe('#on', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   builder.on(['PUT', 'DELETE'], '/items/:id', (c) => {
     const id = c.req.param('id')
@@ -394,7 +394,7 @@ describe('#on', () => {
 })
 
 describe('#use', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   // Global middleware
   builder.use('*', async (c, next) => {
@@ -440,10 +440,10 @@ describe('#use', () => {
 })
 
 describe('#route', () => {
-  const mainBuilder = newHonoBuilder()
+  const mainBuilder = honoBuilder()
 
   // Create a sub-app for users
-  const usersBuilder = newHonoBuilder()
+  const usersBuilder = honoBuilder()
   usersBuilder.get('/', (c) => c.json({ message: 'List all users' }))
   usersBuilder.get('/:id', (c) => {
     const id = c.req.param('id')
@@ -453,7 +453,7 @@ describe('#route', () => {
   const usersApp = usersBuilder.build()
 
   // Create a sub-app for posts
-  const postsBuilder = newHonoBuilder()
+  const postsBuilder = honoBuilder()
   postsBuilder.get('/', (c) => c.json({ message: 'List all posts' }))
   postsBuilder.get('/:id', (c) => {
     const id = c.req.param('id')
@@ -519,16 +519,16 @@ describe('#route', () => {
 
   suite('Nested mounting', () => {
     // Create a deeply nested structure
-    const adminBuilder = newHonoBuilder()
+    const adminBuilder = honoBuilder()
     adminBuilder.get('/dashboard', (c) => c.json({ message: 'Admin dashboard' }))
     const adminApp = adminBuilder.build()
 
-    const apiBuilder = newHonoBuilder()
+    const apiBuilder = honoBuilder()
     apiBuilder.route('/admin', adminApp)
     apiBuilder.get('/health', (c) => c.json({ status: 'OK' }))
     const apiApp = apiBuilder.build()
 
-    const nestedBuilder = newHonoBuilder()
+    const nestedBuilder = honoBuilder()
     nestedBuilder.route('/api/v1', apiApp)
     const nestedApp = nestedBuilder.build()
 
@@ -549,7 +549,7 @@ describe('#route', () => {
 })
 
 describe('#basePath', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   // Create an app with basePath using the basePath() method
   const apiBuilder = builder.basePath('/api/v1')
@@ -605,10 +605,10 @@ describe('#basePath', () => {
 
   suite('Nested basePath', () => {
     // Test nested basePath functionality
-    const mainBuilder = newHonoBuilder()
+    const mainBuilder = honoBuilder()
 
     // Create a sub-app with its own basePath
-    const adminBuilder = newHonoBuilder().basePath('/admin')
+    const adminBuilder = honoBuilder().basePath('/admin')
     adminBuilder.get('/dashboard', (c) => c.json({ page: 'admin dashboard' }))
     adminBuilder.get('/users', (c) => c.json({ page: 'admin users' }))
 
@@ -644,7 +644,7 @@ describe('#basePath', () => {
   })
 
   suite('basePath with middleware', () => {
-    const baseBuilder = newHonoBuilder()
+    const baseBuilder = honoBuilder()
 
     // Add global middleware
     baseBuilder.use('*', async (c, next) => {
@@ -677,7 +677,7 @@ describe('#basePath', () => {
 })
 
 describe('#mount', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   // Simple application handler that returns a JSON response
   const simpleHandler = (request: Request) => {
@@ -801,7 +801,7 @@ describe('#mount', () => {
   })
 
   suite('Async mounted handlers', () => {
-    const asyncBuilder = newHonoBuilder()
+    const asyncBuilder = honoBuilder()
 
     // Async application handler
     const asyncHandler = async (request: Request) => {
@@ -836,7 +836,7 @@ describe('#mount', () => {
   })
 
   suite('Error handling in mounted apps', () => {
-    const errorBuilder = newHonoBuilder()
+    const errorBuilder = honoBuilder()
 
     // Handler that throws an error
     const errorHandler = (request: Request) => {
@@ -872,7 +872,7 @@ describe('#mount', () => {
 })
 
 describe('routes', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
 
   builder.get('/foo', (c) => c.text('Foo'))
 
@@ -912,7 +912,7 @@ describe('routes', () => {
 })
 
 describe('router', () => {
-  const builder = newHonoBuilder()
+  const builder = honoBuilder()
   const app = builder.build()
 
   it('should be Hono.router', () => {

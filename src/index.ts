@@ -5,9 +5,9 @@
  *
  * @example
  * ```ts
- * import { newHonoBuilder } from 'hono-builder'
+ * import { honoBuilder } from 'hono-builder'
  *
- * const builder = newHonoBuilder()
+ * const builder = honoBuilder()
  *
  * builder.get('/', (c) => c.text('HonoBuilder!'))
  *
@@ -18,7 +18,7 @@
  * ```
  */
 
-import { newHonoBuilder } from './hono-builder'
+import { honoBuilder } from './hono-builder'
 import type { HonoBuilder } from './hono-builder'
 
 export type { HonoBuilder }
@@ -26,4 +26,4 @@ export type { HonoBuilder }
 /**
  * Builder for Hono framework
  */
-export { newHonoBuilder }
+export { honoBuilder }

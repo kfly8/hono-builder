@@ -48,9 +48,9 @@ export interface HonoBuilder<
    * @example
    *
    * ```typescript
-   * import { newHonoBuilder } from 'hono-builder'
+   * import { honoBuilder } from 'hono-builder'
    *
-   * const builder = newHonoBuilder()
+   * const builder = honoBuilder()
    *
    * builder.get('/hello', (c) => {
    *   return c.json({ message: 'Hello, World!' })
@@ -174,9 +174,9 @@ export interface HonoBuilder<
  *
  * @example
  * ```typescript
- * import { newHonoBuilder } from 'hono-builder'
+ * import { honoBuilder } from 'hono-builder'
  *
- * const builder = newHonoBuilder()
+ * const builder = honoBuilder()
  *   .get('/users', getUsersHandler)
  *   .post('/users', createUserHandler)
  *   .basePath('/api/v1')
@@ -189,7 +189,7 @@ export interface HonoBuilder<
  * export default app
  * ```
  */
-export function newHonoBuilder<
+export function honoBuilder<
   E extends Env = Env,
   S extends Schema = {},
   BasePath extends string = '/'

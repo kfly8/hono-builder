@@ -1,7 +1,7 @@
-import { newHonoBuilder } from 'hono-builder'
+import { honoBuilder } from 'hono-builder'
 import { logger } from 'hono/logger'
 
-const builder = newHonoBuilder()
+const builder = honoBuilder()
 
 builder.use(logger())
 

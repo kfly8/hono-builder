@@ -1,4 +1,4 @@
-import { newHonoBuilder } from 'hono-builder'
+import { honoBuilder } from 'hono-builder'
 import { logger } from 'hono/logger'
 
 type Env = {
@@ -7,7 +7,7 @@ type Env = {
   }
 }
 
-const builder = newHonoBuilder<Env>()
+const builder = honoBuilder<Env>()
 
 builder.use(async (c, next) => {
   c.set('message', 'Hono is awesome!!')
