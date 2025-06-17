@@ -4,22 +4,29 @@
 
 # Hono Builder
 
-Builder class for Hono framework. Enables modular routing and optimized bundle sizes for edge runtimes.
+Builder pattern for Hono framework. Enables modular routing and optimized bundle sizes for edge runtimes.
 
-## Import
+## Usage
 
 ```typescript
-import { HonoBuilder } from 'hono-builder'
+import { newHonoBuilder } from 'hono-builder'
+
+const builder = newHonoBuilder()
+
+builder.get('/hello', (c) => c.text('Hello'))
+
+const app = builder.build()
+export default app
 ```
 
 ## Methods
 
-An instance of `HonoBuilder` has the following methods.
+`HonoBuilder` has the following methods.
 
 - builder.**build**()
 - builder.**setNotFoundHandler**(handler)
 - builder.**setErrorHandler**(handler)
-
+っ
 Additionally, `HonoBuilder` has the routing methods, which have the same interface as `Hono`.
 
 - builder.**HTTP_METHOD**([path,]handler|middleware...)
@@ -28,45 +35,11 @@ Additionally, `HonoBuilder` has the routing methods, which have the same interfa
 - builder.**use**([path,]middleware)
 - builder.**route**(path, [app])
 - builder.**basePath**(path)
+- builder.**mount**(path, anotherApp)
 
-## `build()`
+## `newHonoBuilder`
 
-`builder.build()` makes a new Hono instance with the configured routes.
-
-```typescript
-const builder = new HonoBuilder()
-
-// Define routes
-builder.get('/hello', (c) => c.json({ message: 'Hello!' }))
-
-// Build the Hono app
-const app = builder.build()
-```
-
-## `setNotFoundHandler`
-
-`builder.setNotFoundHandler` allows you to customize a Not Found Response.
- 
-```typescript
-builder.setNotFoundHandler((c) => {
-  return c.text('Custom 404 Message', 404)
-})
-```
-
-## `setErrorHandler`
-
-`builder.setErrorHandler` handles an error and returns a customized Response.
-
-```typescript
-builder.setErrorHandler((err, c) => {
-  console.error(`${err}`)
-  return c.text('Custom Error Message', 500)
-})
-```
-
-## Constructor
-
-`HonoBuilder` receives options and type generics like `Hono`, and generates a `Hono` instance based on them.
+`newHonoBuilder` receives options and type generics like `Hono`, and generates a `Hono` instance based on them.
 
 ```typescript
 type Bindings = {
@@ -81,10 +54,45 @@ const options = {
   strict: true
 }
 
-const builder = new HonoBuilder<Env>(options)
+const builder = newHonoBuilder<Env>(options)
 
 const app = builder.build()
 // => build Hono<Env>(options)
+```
+
+## `build()`
+
+`.build()` makes a new Hono instance with the configured routes.
+
+```typescript
+const builder = newHonoBuilder()
+
+// Define routes
+builder.get('/hello', (c) => c.json({ message: 'Hello!' }))
+
+// Build the Hono app
+const app = builder.build()
+```
+
+## `setNotFoundHandler`
+
+`.setNotFoundHandler()` allows you to customize a Not Found Response.
+ 
+```typescript
+builder.setNotFoundHandler((c) => {
+  return c.text('Custom 404 Message', 404)
+})
+```
+
+## `setErrorHandler`
+
+`.setErrorHandler()` handles an error and returns a customized Response.
+
+```typescript
+builder.setErrorHandler((err, c) => {
+  console.error(`${err}`)
+  return c.text('Custom Error Message', 500)
+})
 ```
 
 ## File Layout

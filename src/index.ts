@@ -1,13 +1,13 @@
 /**
  * @module
  *
- * HonoBuilder - Builder class for Hono framework.
+ * HonoBuilder - Builder pattern for Hono framework.
  *
  * @example
  * ```ts
- * import { HonoBuilder } from 'hono-builder'
+ * import { newHonoBuilder } from 'hono-builder'
  *
- * const builder = new HonoBuilder()
+ * const builder = newHonoBuilder()
  *
  * builder.get('/', (c) => c.text('HonoBuilder!'))
  *
@@ -18,9 +18,12 @@
  * ```
  */
 
-import { HonoBuilder } from './hono-builder'
+import { newHonoBuilder } from './hono-builder'
+import type { HonoBuilder } from './hono-builder'
+
+export type { HonoBuilder }
 
 /**
- * Builder class for Hono framework
+ * Builder for Hono framework
  */
-export { HonoBuilder }
+export { newHonoBuilder }
