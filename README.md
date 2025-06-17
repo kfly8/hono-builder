@@ -26,7 +26,7 @@ export default app
 - builder.**build**()
 - builder.**setNotFoundHandler**(handler)
 - builder.**setErrorHandler**(handler)
-っ
+
 Additionally, `HonoBuilder` has the routing methods, which have the same interface as `Hono`.
 
 - builder.**HTTP_METHOD**([path,]handler|middleware...)
