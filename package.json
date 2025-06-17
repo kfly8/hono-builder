@@ -35,12 +35,14 @@
     "format:fix": "prettier --write --cache --cache-strategy metadata \"src/**/*.{js,ts,tsx}\"",
     "remove-dist": "rm -rf ./dist",
     "build": "bun run remove-dist && bun ./build/build.ts",
-    "postbuild": "publint"
+    "postbuild": "publint",
+    "release": "np"
   },
   "devDependencies": {
     "@hono/eslint-config": "^1.0.2",
     "@types/bun": "latest",
     "eslint": "^9.10.0",
+    "np": "^10.2.0",
     "prettier": "^2.6.2",
     "publint": "^0.3.12",
     "vitest": "^3.2.2"
