@@ -2,6 +2,10 @@
   "name": "@kfly8/hono-builder",
   "version": "0.1.0",
   "license": "MIT",
+  "imports": {
+    "hono": "jsr:@hono/hono@^4.0.0",
+    "hono/": "jsr:@hono/hono/"
+  },
   "exports": {
     ".": "./src/index.ts"
   },
