@@ -3,7 +3,7 @@ import { run } from './utils'
 
 const commonOptions = {
   entrypoints: ["./src/index.ts"],
-  target: "node" as const,
+  target: "browser" as const,
   minify: false,
   sourceMap: "external",
   external: ["hono"],
