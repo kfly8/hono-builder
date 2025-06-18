@@ -194,37 +194,37 @@ export function honoBuilder<
   S extends Schema = {},
   BasePath extends string = '/'
 >(options?: HonoOptions<E>): HonoBuilder<E, S, BasePath> {
-  const hono = new Hono<E, S, BasePath>(options) as HonoBuilder<E, S, BasePath>
+  const builder = new Hono<E, S, BasePath>(options) as HonoBuilder<E, S, BasePath>
 
-  const createProxy = (target: typeof hono): typeof hono => {
+  const createProxy = (target: typeof builder): typeof builder => {
     return new Proxy(target, {
       get(target, prop, receiver) {
         if (prop === 'build') {
           return () => target as Hono<E, S, BasePath>
-        } else if (prop === 'setNotFoundHandler') {
-          const originalMethod = target.notFound as Function
-          return function (this: typeof target, ...args: unknown[]) {
-            const result = originalMethod.apply(target, args)
-            return createProxy(result)
-          }
-        } else if (prop === 'setErrorHandler') {
-          const originalMethod = target.onError as Function
-          return function (this: typeof target, ...args: unknown[]) {
-            const result = originalMethod.apply(target, args)
-            return createProxy(result)
-          }
-        } else if (DELEGATION_METHODS.has(String(prop))) {
-          return createDelegatingMethod(target, prop as keyof typeof target, createProxy)
-        } else if (FORBIDDEN_METHODS.has(String(prop))) {
-          throw new Error(`.${String(prop)} is not available in HonoBuilder`)
-        } else {
-          return Reflect.get(target, prop, receiver)
         }
+
+        if (prop === 'setNotFoundHandler') {
+          return createDelegatingMethod(target, 'notFound', createProxy)
+        }
+
+        if (prop === 'setErrorHandler') {
+          return createDelegatingMethod(target, 'onError', createProxy)
+        }
+
+        if (DELEGATION_METHODS.has(String(prop))) {
+          return createDelegatingMethod(target, prop as keyof typeof target, createProxy)
+        }
+
+        if (FORBIDDEN_METHODS.has(String(prop))) {
+          throw new Error(`.${String(prop)} is not available in HonoBuilder`)
+        }
+
+        return Reflect.get(target, prop, receiver)
       },
     })
   }
 
-  return createProxy(hono)
+  return createProxy(builder)
 }
 
 /**
