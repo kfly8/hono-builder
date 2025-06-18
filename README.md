@@ -2,6 +2,9 @@
 ![GitHub License](https://img.shields.io/github/license/kfly8/hono-builder)
 [![NPM Version](https://img.shields.io/npm/v/hono-builder)](https://www.npmjs.com/package/hono-builder)
 [![JSR](https://jsr.io/badges/@kfly8/hono-builder)](https://jsr.io/@kfly8/hono-builder)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/hono-builder)](https://bundlephobia.com/package/hono-builder)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/hono-builder)](https://bundlephobia.com/package/hono-builder)
+
 
 # Hono Builder
 
