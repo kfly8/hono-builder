@@ -1,0 +1,6 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "multi-workers-dev",
+  "compatibility_date": "2024-04-01",
+  "main": "./dist/dev/index.js"
+}

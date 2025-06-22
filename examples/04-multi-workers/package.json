@@ -1,0 +1,33 @@
+{
+  "name": "04-multi-workers",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:worker": "vite build --mode dev && wrangler dev --port 8780",
+    "dev:entry1": "bun run build:entry1 && wrangler dev --config wrangler.entry1.jsonc --port 8781",
+    "dev:entry2": "bun run build:entry2 && wrangler dev --config wrangler.entry2.jsonc --port 8782",
+    "dev:entry3": "bun run build:entry3 && wrangler dev --config wrangler.entry3.jsonc --port 8783",
+    "build": "bun run build:dev && bun run build:entry1 && bun run build:entry2 && bun run build:entry3",
+    "build:dev": "vite build --mode dev",
+    "build:entry1": "vite build --mode entry1",
+    "build:entry2": "vite build --mode entry2",
+    "build:entry3": "vite build --mode entry3",
+    "preview": "bun run build && vite preview",
+    "deploy": "bun run build && bun run deploy:all",
+    "deploy:all": "bun run deploy:entry1 && bun run deploy:entry2 && bun run deploy:entry3",
+    "deploy:entry1": "wrangler deploy --config wrangler.entry1.jsonc",
+    "deploy:entry2": "wrangler deploy --config wrangler.entry2.jsonc",
+    "deploy:entry3": "wrangler deploy --config wrangler.entry3.jsonc",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "hono": "^4.8.2",
+    "hono-builder": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.2.3",
+    "vite": "^6.3.5",
+    "vite-ssr-components": "^0.3.0",
+    "wrangler": "^4.17.0"
+  }
+}

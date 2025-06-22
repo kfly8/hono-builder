@@ -1,0 +1,6 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "multi-workers-entry2",
+  "compatibility_date": "2024-04-01",
+  "main": "./dist/entry2/index.js"
+}
