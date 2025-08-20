@@ -8,20 +8,73 @@
 
 # Hono Builder
 
-Builder pattern for Hono framework. Enables modular routing and optimized bundle sizes for edge runtimes.
+A modular routing system for [Hono](https://hono.dev) that enables file-based routing with optimized bundle sizes for edge runtimes.
+
+## Installation
+
+```bash
+npm install hono-builder
+```
 
 ## Usage
 
+The following are a typical project structure using HonoBuilder.
+
+**Project structure:**
+```
+src/
+├── builder.ts       // Setup HonoBuilder
+├── server.ts        // Import routes and build app
+├── renderer.tsx
+├── routes/          // Define routes as separate files
+│   ├── _404.tsx
+│   ├── _error.tsx
+│   ├── root.tsx
+│   ├── todos.tsx
+│   └── api
+│       ├── status.ts
+│       └── users.ts
+└── ...
+```
+
+**src/builder.ts** - Creates and configures the HonoBuilder instance with middleware:
 ```typescript
 import { honoBuilder } from 'hono-builder'
+import { logger } from 'hono/logger'
+import { renderer } from './renderer'
 
 const builder = honoBuilder()
+builder.use(logger())
+builder.use(renderer)
 
-builder.get('/hello', (c) => c.text('Hello'))
+export default builder
+```
+
+**src/server.ts** - Imports all routes and builds the final Hono app:
+```typescript
+// Import necessary routes
+import './routes/_404'
+import './routes/_error'
+import.meta.glob('./routes/**/!(_*|$*|*.test|*.spec).(ts|tsx)', { eager: true })
+
+import builder from './builder'
 
 const app = builder.build()
+
 export default app
 ```
+
+**src/routes/root.ts:**
+```typescript
+import builder from '../builder'
+
+builder.get('/', (c) => {
+  return c.render(<h1>Hello World</h1>)
+})
+```
+
+For more details, please refer to the examples.
+[https://github.com/kfly8/hono-builder/tree/main/examples](https://github.com/kfly8/hono-builder/tree/main/examples)
 
 ## Methods
 
@@ -99,22 +152,62 @@ builder.setErrorHandler((err, c) => {
 })
 ```
 
-## File Layout
+## Notes
 
-There are several ways to structure code using `HonoBuilder` depending on the situation. Here is a recommended approach, but please note that this is completely optional.
+### Hot Module Replacement (HMR) with Vite
 
+When using Vite dev server with HonoBuilder, you need to configure `handleHotUpdate` to properly reload the builder module when routes change. This ensures that new routes are registered during development.
+
+The `handleHotUpdate` function in `vite.config.ts` should reload `src/builder.ts` when any SSR module changes:
+
+```typescript
+handleHotUpdate: ({ server, modules }) => {
+  const isSSR = modules.some((mod) => (mod as any)._ssrModule)
+  if (isSSR) {
+    const builderModule = server.moduleGraph.getModuleById(
+      new URL('./src/builder.ts', import.meta.url).pathname
+    )
+    if (builderModule) {
+      server.reloadModule(builderModule)
+    }
+    server.hot.send({ type: 'full-reload' })
+    return []
+  }
+}
 ```
-src
-├── builder.ts       // Setup HonoBuilder.
-├── app.ts           // Import routing files and exports builder.build()
-├── routes           // Define routings
-│   ├── _404.tsx
-│   ├── _error.tsx
-│   └── root.tsx
-└── server.ts        // Entrypoint of server
+
+This is necessary because HonoBuilder routes are registered at import time, and without reloading the builder module, changes to route files won't be reflected in the running server.
+
+
+## How it works
+
+HonoBuilder uses JavaScript Proxy and TypeScript's `as` type assertions to provide a builder pattern while maintaining full Hono compatibility. Under the hood, it's still Hono, but wrapped with HonoBuilder's interface for modular route registration.
+
+```typescript
+export function honoBuilder<E, S, BasePath>(options?: HonoOptions<E>): HonoBuilder<E, S, BasePath> {
+  // Create a standard Hono instance but cast it as HonoBuilder
+  const builder = new Hono<E, S, BasePath>(options) as HonoBuilder<E, S, BasePath>
+
+  const createProxy = (target: typeof builder): typeof builder => {
+    return new Proxy(target, {
+      get(target, prop, receiver) {
+        // Add the build() method that returns the Hono instance
+        if (prop === 'build') {
+          return () => target as Hono<E, S, BasePath>
+        }
+
+        ...
+
+        return Reflect.get(target, prop, receiver)
+      },
+    })
+  }
+
+  return createProxy(builder)
+}
 ```
 
-For more details, please refer to the examples.
+This architecture ensures that you retain all of Hono's type safety and features while gaining the benefits of modular routing and optimized bundling.
 
 ## Acknowledgments
 
