@@ -7,7 +7,7 @@ import.meta.glob('./routes/**/!(_*|$*|*.test|*.spec).(ts|tsx)', { eager: true })
 
 import builder from './builder';
 
-const app = builder.build()
+const app = builder
 
 showRoutes(app, {
   verbose: true,

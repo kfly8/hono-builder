@@ -1,6 +1,6 @@
 import builder from '../../builder'
 
-builder.setErrorHandler((err, c) => {
+builder.onError((err, c) => {
   return c.json(
     {
       error: 'Internal Server Error',

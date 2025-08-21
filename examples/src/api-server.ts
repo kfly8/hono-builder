@@ -6,6 +6,6 @@ import.meta.glob('./routes/api/**/!(_*|$*|*.test|*.spec).(ts|tsx)', { eager: tru
 
 import builder from './builder';
 
-const app = builder.build()
+const app = builder
 
 export default app

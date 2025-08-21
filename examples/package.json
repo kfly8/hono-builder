@@ -9,8 +9,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "hono": "^4.9.2",
-    "hono-builder": "^0.1.0"
+    "hono": "^4.9.2"
   },
   "devDependencies": {
     "@hono/vite-dev-server": "^0.20.1",

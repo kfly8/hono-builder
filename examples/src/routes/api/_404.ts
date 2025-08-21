@@ -1,6 +1,6 @@
 import builder from '../../builder'
 
-builder.setNotFoundHandler((c) => {
+builder.notFound((c) => {
   return c.json({ error: 'Not Found' }, 404)
 })
 
