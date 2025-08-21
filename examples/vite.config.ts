@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import devServer from '@hono/vite-dev-server'
-import type { HmrContext, ModuleNode } from 'vite'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -10,7 +9,7 @@ export default defineConfig({
   plugins: [
     devServer({
       entry: 'src/server.ts',
-      handleHotUpdate: ({ server, modules }: HmrContext): void | ModuleNode[] => {
+      handleHotUpdate: ({ server, modules }) => {
         const isSSR = modules.some((mod) => (mod as any)._ssrModule)
 
         if (isSSR) {
