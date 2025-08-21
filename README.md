@@ -6,14 +6,60 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/min/hono-builder)](https://bundlephobia.com/package/hono-builder)
 
 
-# Hono Builder
+# ⚠️ DEPRECATED - Hono Builder
 
-A modular routing system for [Hono](https://hono.dev) that enables file-based routing with optimized bundle sizes for edge runtimes.
+> **This package is deprecated.** Hono framework alone is sufficient for achieving the same goals. See the [migration guide](#migration-from-hono-builder) below.
+
+~~A modular routing system for [Hono](https://hono.dev) that enables file-based routing with optimized bundle sizes for edge runtimes.~~
+
+## Migration from hono-builder
+
+You don't need hono-builder! Hono itself supports everything you need:
+
+### Before (with hono-builder):
+```typescript
+// builder.ts
+import { honoBuilder } from 'hono-builder'
+const builder = honoBuilder()
+export default builder
+```
+
+### After (Hono only):
+```typescript
+// builder.ts
+import { Hono } from 'hono'
+const builder = new Hono()
+export default builder
+```
+
+### File-based routing works the same way:
+```typescript
+// routes/users.ts
+import builder from '../builder'
+builder.get('/users', handler)
+```
+
+### Multi-endpoint configuration:
+```typescript
+// web-server.ts - imports web routes
+import './routes/web/*'
+import app from './builder'
+export default app
+
+// api-server.ts - imports only API routes
+import './routes/api/*'
+import app from './builder'
+export default app
+```
+
+---
+
+## Original Documentation (Deprecated)
 
 ## Installation
 
 ```bash
-npm install hono-builder
+npm install hono-builder # ⚠️ DEPRECATED - use 'hono' instead
 ```
 
 ## Usage
